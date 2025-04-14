@@ -1,0 +1,36 @@
+[gd_scene load_steps=7 format=3 uid="uid://bkp0xeuf2l42x"]
+
+[ext_resource type="Script" uid="uid://sy47ufnvphwq" path="res://main.gd" id="1_h2yge"]
+[ext_resource type="Texture2D" uid="uid://0ilmoxmujgl1" path="res://assets/space_background.png" id="1_ig7tw"]
+[ext_resource type="PackedScene" uid="uid://k41x41f1v1a2" path="res://player/player.tscn" id="2_0xm2m"]
+[ext_resource type="PackedScene" uid="uid://bq3uruhlk3lfo" path="res://enemies/rock.tscn" id="2_1bvp3"]
+[ext_resource type="PackedScene" uid="uid://ck2cv7id2dk0q" path="res://ui/hud.tscn" id="5_lquwl"]
+
+[sub_resource type="Curve2D" id="Curve2D_0xm2m"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1152, 0, 0, 0, 0, 0, 1152, 648, 0, 0, 0, 0, 0, 648, 0, 0, 0, 0, 0, 0)
+}
+point_count = 5
+
+[node name="Main" type="Node"]
+script = ExtResource("1_h2yge")
+rock_scene = ExtResource("2_1bvp3")
+
+[node name="Background" type="Sprite2D" parent="."]
+position = Vector2(576.25, 324.5)
+scale = Vector2(0.59974, 0.599074)
+texture = ExtResource("1_ig7tw")
+
+[node name="Player" parent="." instance=ExtResource("2_0xm2m")]
+position = Vector2(64, 320)
+
+[node name="RockPath" type="Path2D" parent="."]
+curve = SubResource("Curve2D_0xm2m")
+
+[node name="RockSpawn" type="PathFollow2D" parent="RockPath"]
+
+[node name="HUD" parent="." instance=ExtResource("5_lquwl")]
+
+[connection signal="dead" from="Player" to="." method="game_over"]
+[connection signal="lives_changed" from="Player" to="HUD" method="update_lives"]
+[connection signal="start_game" from="HUD" to="." method="new_game"]
