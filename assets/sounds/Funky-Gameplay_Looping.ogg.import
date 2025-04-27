@@ -3,11 +3,12 @@
 importer="oggvorbisstr"
 type="AudioStreamOggVorbis"
 uid="uid://dsv3h3fors8yo"
-valid=false
+path="res://.godot/imported/Funky-Gameplay_Looping.ogg-202bedac505a84b35d4d3b1bf9ee7a73.oggvorbisstr"
 
 [deps]
 
 source_file="res://assets/sounds/Funky-Gameplay_Looping.ogg"
+dest_files=["res://.godot/imported/Funky-Gameplay_Looping.ogg-202bedac505a84b35d4d3b1bf9ee7a73.oggvorbisstr"]
 
 [params]
 

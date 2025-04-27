@@ -1,10 +1,14 @@
-[gd_scene load_steps=7 format=3 uid="uid://bkp0xeuf2l42x"]
+[gd_scene load_steps=11 format=3 uid="uid://bkp0xeuf2l42x"]
 
 [ext_resource type="Script" uid="uid://sy47ufnvphwq" path="res://main.gd" id="1_h2yge"]
 [ext_resource type="Texture2D" uid="uid://0ilmoxmujgl1" path="res://assets/space_background.png" id="1_ig7tw"]
 [ext_resource type="PackedScene" uid="uid://k41x41f1v1a2" path="res://player/player.tscn" id="2_0xm2m"]
 [ext_resource type="PackedScene" uid="uid://bq3uruhlk3lfo" path="res://enemies/rock.tscn" id="2_1bvp3"]
+[ext_resource type="PackedScene" uid="uid://bm37111fb76c2" path="res://enemies/saucer.tscn" id="3_7mycd"]
 [ext_resource type="PackedScene" uid="uid://ck2cv7id2dk0q" path="res://ui/hud.tscn" id="5_lquwl"]
+[ext_resource type="AudioStream" uid="uid://bbiw1jvh7vlw8" path="res://assets/sounds/explosion.wav" id="7_kek77"]
+[ext_resource type="AudioStream" uid="uid://dgixfr04ll38o" path="res://assets/sounds/levelup.ogg" id="8_4c57u"]
+[ext_resource type="AudioStream" uid="uid://dsv3h3fors8yo" path="res://assets/sounds/Funky-Gameplay_Looping.ogg" id="9_efxa6"]
 
 [sub_resource type="Curve2D" id="Curve2D_0xm2m"]
 _data = {
@@ -13,8 +17,10 @@ _data = {
 point_count = 5
 
 [node name="Main" type="Node"]
+process_mode = 3
 script = ExtResource("1_h2yge")
 rock_scene = ExtResource("2_1bvp3")
+enemy_scene = ExtResource("3_7mycd")
 
 [node name="Background" type="Sprite2D" parent="."]
 position = Vector2(576.25, 324.5)
@@ -22,7 +28,7 @@ scale = Vector2(0.59974, 0.599074)
 texture = ExtResource("1_ig7tw")
 
 [node name="Player" parent="." instance=ExtResource("2_0xm2m")]
-position = Vector2(64, 320)
+position = Vector2(576, 320)
 
 [node name="RockPath" type="Path2D" parent="."]
 curve = SubResource("Curve2D_0xm2m")
@@ -31,6 +37,23 @@ curve = SubResource("Curve2D_0xm2m")
 
 [node name="HUD" parent="." instance=ExtResource("5_lquwl")]
 
+[node name="EnemyTimer" type="Timer" parent="."]
+one_shot = true
+
+[node name="ExplosionSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("7_kek77")
+volume_db = -5.0
+
+[node name="LevelupSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("8_4c57u")
+volume_db = -5.0
+
+[node name="Music" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("9_efxa6")
+volume_db = -5.0
+
 [connection signal="dead" from="Player" to="." method="game_over"]
 [connection signal="lives_changed" from="Player" to="HUD" method="update_lives"]
+[connection signal="shield_changed" from="Player" to="HUD" method="update_shield"]
 [connection signal="start_game" from="HUD" to="." method="new_game"]
+[connection signal="timeout" from="EnemyTimer" to="." method="_on_enemy_timer_timeout"]

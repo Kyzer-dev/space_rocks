@@ -1,14 +1,24 @@
-[gd_scene load_steps=6 format=3 uid="uid://k41x41f1v1a2"]
+[gd_scene load_steps=10 format=3 uid="uid://k41x41f1v1a2"]
 
 [ext_resource type="Texture2D" uid="uid://gk70nmo4bkiv" path="res://assets/player_ship.png" id="1_oul6g"]
 [ext_resource type="Script" uid="uid://dsne03cfquyx" path="res://player/player.gd" id="1_rkbax"]
 [ext_resource type="PackedScene" uid="uid://cw8f5xwwvexb7" path="res://player/weapons/bullet.tscn" id="2_g1dw6"]
 [ext_resource type="PackedScene" uid="uid://dw88vv21xal4n" path="res://effects/explosion.tscn" id="4_yw30f"]
+[ext_resource type="AudioStream" uid="uid://cji3d3x3aqg2" path="res://assets/sounds/laser.ogg" id="5_g6k8r"]
+[ext_resource type="AudioStream" uid="uid://bkd0wv0g23b2k" path="res://assets/sounds/engine.ogg" id="6_boad6"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_rkbax"]
-radius = 31.0644
+radius = 30.0
 
-[node name="Player" type="RigidBody2D"]
+[sub_resource type="Curve" id="Curve_g6k8r"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="Gradient" id="Gradient_boad6"]
+offsets = PackedFloat32Array(0.00444444, 0.293333, 1)
+colors = PackedColorArray(1, 0.762023, 0.772321, 1, 1, 0.360784, 0.105882, 0.843137, 0, 0, 0, 0)
+
+[node name="Player" type="RigidBody2D" groups=["player"]]
 contact_monitor = true
 max_contacts_reported = 1
 linear_damp = 2.0
@@ -16,6 +26,7 @@ angular_damp = 6.0
 script = ExtResource("1_rkbax")
 engine_power = 1250
 bullet_scene = ExtResource("2_g1dw6")
+max_shield = 80.0
 metadata/_edit_group_ = true
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
@@ -39,6 +50,29 @@ visible = false
 [node name="InvulnerabilityTimer" type="Timer" parent="."]
 wait_time = 2.0
 one_shot = true
+
+[node name="LaserSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("5_g6k8r")
+volume_db = -5.0
+
+[node name="EngineSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("6_boad6")
+
+[node name="Exhaust" type="CPUParticles2D" parent="."]
+show_behind_parent = true
+position = Vector2(-28, 0)
+rotation = 3.14159
+amount = 25
+lifetime = 0.25
+local_coords = true
+emission_shape = 3
+emission_rect_extents = Vector2(1, 5)
+spread = 0.0
+gravity = Vector2(0, 0)
+initial_velocity_max = 400.0
+scale_amount_max = 8.0
+scale_amount_curve = SubResource("Curve_g6k8r")
+color_ramp = SubResource("Gradient_boad6")
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
 [connection signal="timeout" from="GunCooldown" to="." method="_on_gun_cooldown_timeout"]
